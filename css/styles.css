@@ -2678,9 +2678,7 @@ body {
 
 .te-wrap {
   margin: 0 auto; }
-.te-left{
-  background: rgba(255, 255, 255, .8);
-}
+
 .te-body-home {
   background-color: #f4f4f4; }
   .te-body-home .te-wrap {
@@ -2733,8 +2731,15 @@ body {
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent; }
     #menu-inner .te-menu-item:first-child a:hover {
-      border-color: #258061;
-    }
+      background-image: -webkit-linear-gradient(left, #258061 25%, transparent 25%);
+      background-image: -moz-linear-gradient(left, #258061 25%, transparent 25%);
+      background-image: -o-linear-gradient(left, #258061 25%, transparent 25%);
+      background-image: linear-gradient(left, #258061 25%, transparent 25%); }
+      #menu-inner .te-menu-item:first-child a:hover span {
+        background-image: -webkit-linear-gradient(left, #fff 25%, #258061 25%, #b1c564 50%);
+        background-image: -moz-linear-gradient(left, #fff 25%, #258061 25%, #b1c564 50%);
+        background-image: -o-linear-gradient(left, #fff 25%, #258061 25%, #b1c564 50%);
+        background-image: linear-gradient(left, #fff 25%, #258061 25%, #b1c564 50%); }
 
 #pagination {
   position: relative;
