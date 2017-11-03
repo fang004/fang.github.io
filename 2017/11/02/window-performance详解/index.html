@@ -42,6 +42,13 @@
     <div id="content-outer">
       <div id="content-inner">
         
+<div class="toc-show icon-hide" id="tocShow"></div>
+<div class="post-toc" id="postToc">
+  <div class="toc-outer">
+    <div class="top-title">文章目录</div>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概览"><span class="toc-number">1.</span> <span class="toc-text">概览</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#扒一扒演变"><span class="toc-number">1.1.</span> <span class="toc-text">扒一扒演变</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#API及描述其功能的列表"><span class="toc-number">1.1.1.</span> <span class="toc-text">API及描述其功能的列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#浏览器支持列表"><span class="toc-number">1.1.2.</span> <span class="toc-text">浏览器支持列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#performance的作用"><span class="toc-number">1.2.</span> <span class="toc-text">performance的作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#浏览器支持情况"><span class="toc-number">1.3.</span> <span class="toc-text">浏览器支持情况</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#各个值详解"><span class="toc-number">2.</span> <span class="toc-text">各个值详解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#performance方法"><span class="toc-number">3.</span> <span class="toc-text">performance方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#performance-getEntries-资源测速"><span class="toc-number">3.1.</span> <span class="toc-text">performance.getEntries() 资源测速</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#performance-now-精确计算程序执行时间"><span class="toc-number">3.2.</span> <span class="toc-text">performance.now() 精确计算程序执行时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#performance-mark-标记各种时间戳"><span class="toc-number">3.3.</span> <span class="toc-text">performance.mark() 标记各种时间戳</span></a></li></ol></li></ol>
+  </div>
+</div>
 <article id="post">
   <h1>window.performance详解</h1>
   <h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><h2 id="扒一扒演变"><a href="#扒一扒演变" class="headerlink" title="扒一扒演变"></a>扒一扒演变</h2><ul>
@@ -447,68 +454,68 @@
 </li>
 <li>使用 performance.mark() 标记各种时间戳（就像在地图上打点），保存为各种测量值（测量地图上的点之间的距离），便可以批量地分析这些数据了。</li>
 </ul>
-<pre><code>function randomFunc (n) {  
-    if (!n) {
-        // 生成一个随机数
-        n = ~~(Math.random() * 10000);
+<pre><code>    function randomFunc (n) {  
+        if (!n) {
+            // 生成一个随机数
+            n = ~~(Math.random() * 10000);
+        }
+        var nameStart = &#39;markStart&#39; + n; 
+        var nameEnd   = &#39;markEnd&#39; + n; 
+        // 函数执行前做个标记
+        window.performance.mark(nameStart);
+
+        for (var i = 0; i &lt; n; i++) {
+            // do nothing
+        }
+
+        // 函数执行后再做个标记
+        window.performance.mark(nameEnd);
+
+        // 然后测量这个两个标记间的时间距离，并保存起来
+        var name = &#39;measureRandomFunc&#39; + n;
+        window.performance.measure(name, nameStart, nameEnd);
     }
-    var nameStart = &apos;markStart&apos; + n; 
-    var nameEnd   = &apos;markEnd&apos; + n; 
-    // 函数执行前做个标记
-    window.performance.mark(nameStart);
 
-    for (var i = 0; i &lt; n; i++) {
-        // do nothing
-    }
-
-    // 函数执行后再做个标记
-    window.performance.mark(nameEnd);
-
-    // 然后测量这个两个标记间的时间距离，并保存起来
-    var name = &apos;measureRandomFunc&apos; + n;
-    window.performance.measure(name, nameStart, nameEnd);
-}
-
-// 执行三次看看
-randomFunc();  
-randomFunc();  
-// 指定一个名字
-randomFunc(888);
+    // 执行三次看看
+    randomFunc();  
+    randomFunc();  
+    // 指定一个名字
+    randomFunc(888);
 
 
-// 看下保存起来的标记 mark
-var marks = window.performance.getEntriesByType(&apos;mark&apos;);  
-console.log(marks);
-// 看下保存起来的测量 measure
-var measure = window.performance.getEntriesByType(&apos;measure&apos;);  
-console.log(measure);
-// 看下我们自定义的测量
-var entries = window.performance.getEntriesByName(&apos;measureRandomFunc888&apos;);  
-console.log(entries);
+    // 看下保存起来的标记 mark
+    var marks = window.performance.getEntriesByType(&#39;mark&#39;);  
+    console.log(marks);
+    // 看下保存起来的测量 measure
+    var measure = window.performance.getEntriesByType(&#39;measure&#39;);  
+    console.log(measure);
+    // 看下我们自定义的测量
+    var entries = window.performance.getEntriesByName(&#39;measureRandomFunc888&#39;);  
+    console.log(entries);
 
 
-// 清除指定标记
-window.performance.clearMarks(&apos;markStart888&apos;);  
-// 清除所有标记
-window.performance.clearMarks();
+    // 清除指定标记
+    window.performance.clearMarks(&#39;markStart888&#39;);  
+    // 清除所有标记
+    window.performance.clearMarks();
 
-// 清除指定测量
-window.performance.clearMeasures(&apos;measureRandomFunc&apos;);  
-// 清除所有测量
-window.performance.clearMeasures();
+    // 清除指定测量
+    window.performance.clearMeasures(&#39;measureRandomFunc&#39;);  
+    // 清除所有测量
+    window.performance.clearMeasures();
 
 
 
-// 计算 domReady 时间
-var t = performance.timing  
-var domReadyTime = t.domComplete - t.responseEnd;  
-console.log(domReadyTime)
+    // 计算 domReady 时间
+    var t = performance.timing  
+    var domReadyTime = t.domComplete - t.responseEnd;  
+    console.log(domReadyTime)
 
 
-// 其实就可以写成
-window.performance.measure(&apos;domReady&apos;,&apos;responseEnd&apos; , &apos;domComplete&apos;);  
-var domReadyMeasure = window.performance.getEntriesByName(&apos;domReady&apos;);  
-console.log(domReadyMeasure);
+    // 其实就可以写成
+    window.performance.measure(&#39;domReady&#39;,&#39;responseEnd&#39; , &#39;domComplete&#39;);  
+    var domReadyMeasure = window.performance.getEntriesByName(&#39;domReady&#39;);  
+    console.log(domReadyMeasure);
 </code></pre><p>参考链接</p>
 <ul>
 <li><a href="https://w3c.github.io/navigation-timing/" target="_blank" rel="external">w3官方Navigation Timing</a></li>
